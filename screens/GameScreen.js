@@ -1,4 +1,11 @@
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Title } from '../components/ui/Title';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,12 +29,11 @@ let minBoundary = 1;
 let maxBoundary = 100;
 
 export function GameScreen({ userNumber, onGameOver }) {
-  const initialGuess = useMemo(
-    () => generateRandomBetween(minBoundary, maxBoundary, userNumber),
-    []
-  );
+  const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [guessRounds, setGuessRounds] = useState([initialGuess]);
+
+  const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     if (currentGuess === userNumber) {
@@ -43,7 +49,7 @@ export function GameScreen({ userNumber, onGameOver }) {
   function nextGuessHandler(direction) {
     if (
       (direction === 'lower' && currentGuess < userNumber) ||
-      (direction === 'greated' && currentGuess > userNumber)
+      (direction === 'greater' && currentGuess > userNumber)
     ) {
       Alert.alert('Dont lie!', 'You know that this is wrong...', [
         { text: 'Sorry', style: 'cancel' },
@@ -66,9 +72,8 @@ export function GameScreen({ userNumber, onGameOver }) {
     setGuessRounds((rounds) => [newNumber, ...rounds]);
   }
 
-  return (
-    <View style={styles.screen}>
-      <Title>Opponnet's Guess</Title>
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText style={styles.instructionText}>
@@ -77,17 +82,48 @@ export function GameScreen({ userNumber, onGameOver }) {
         <View style={styles.buttonsContainer}>
           <View style={styles.buttonContainer}>
             <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
+              <Ionicons name='md-remove' size={24} color='white' />
+            </PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
+              <Ionicons name='md-add' size={24} color='white' />
+            </PrimaryButton>
+          </View>
+        </View>
+      </Card>
+    </>
+  );
+
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
               <Ionicons name='md-remove' size='24' color='white' />
             </PrimaryButton>
           </View>
+
+          <NumberContainer>{currentGuess}</NumberContainer>
+
           <View style={styles.buttonContainer}>
             <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
               <Ionicons name='md-add' size='24' color='white' />
             </PrimaryButton>
           </View>
         </View>
-      </Card>
-      <ScrollView style={styles.logsContainer}>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <Title>Opponnet's Guess</Title>
+
+      {content}
+
+      <ScrollView style={styles.logsContainer} alwaysBounceVertical={false}>
         {guessRounds.map((guess, index) => (
           <GuessLogItem
             key={guess}
@@ -103,6 +139,7 @@ export function GameScreen({ userNumber, onGameOver }) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    alignItems: 'center',
     padding: 24,
   },
   instructionText: {
@@ -111,11 +148,16 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
   },
+  buttonsContainerWide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   buttonContainer: {
     flex: 1,
   },
   logsContainer: {
     flex: 1,
+    width: '100%',
     padding: 16,
   },
 });

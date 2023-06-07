@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, Platform } from 'react-native';
 
 export function Title({ children }) {
   return <Text style={styles.title}>{children}</Text>;
@@ -7,9 +7,9 @@ export function Title({ children }) {
 
 const styles = StyleSheet.create({
   title: {
+    maxWidth: '80%',
+    width: 300,
     padding: 12,
-    borderWidth: 2,
-    borderColor: 'white',
     fontFamily: 'open-sans-bold',
     fontSize: 24,
     color: 'white',
