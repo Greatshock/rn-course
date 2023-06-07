@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Alert } from 'react-native';
-import { PrimaryButton } from '../components/PrimaryButton';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { Colors } from '../constants/colors';
+import { Title } from '../components/ui/Title';
+import { Card } from '../components/ui/Card';
+import { InstructionText } from '../components/game/InstructionText';
 
 export function StartGameScreen({ onPickNumber }) {
   const [enteredNumber, setEnteredNumber] = useState('');
@@ -31,42 +34,37 @@ export function StartGameScreen({ onPickNumber }) {
   }
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        maxLength={2}
-        keyboardType='number-pad'
-        autoCapitalize='none'
-        autoCorrect={false}
-        value={enteredNumber}
-        onChangeText={numberInputHandler}
-      ></TextInput>
-      <View style={styles.buttonsContainer}>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
+    <View style={styles.rootContainer}>
+      <Title>Guess My Number</Title>
+      <Card>
+        <InstructionText>Enter a number</InstructionText>
+        <TextInput
+          style={styles.input}
+          maxLength={2}
+          keyboardType='number-pad'
+          autoCapitalize='none'
+          autoCorrect={false}
+          value={enteredNumber}
+          onChangeText={numberInputHandler}
+        ></TextInput>
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
-        </View>
-      </View>
+      </Card>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  rootContainer: {
     marginTop: 100,
-    marginHorizontal: 24,
-    padding: 16,
-    borderRadius: 6,
-    backgroundColor: Colors.primary800,
-    elevation: 4, // shadow for Android, bigger value => bigger shadow
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.25,
+    flex: 1,
+    alignItems: 'center',
   },
   input: {
     height: 50,
