@@ -4,7 +4,7 @@
 | ----------------- | ------------------------ |
 | master            | Goals app from Chapter 2 |
 | guess-number-game | Mini-game from Chapter 4 |
-|                   |                          |
+| meals             | Meals app from Chapter 6 |
 |                   |                          |
 |                   |                          |
 |                   |                          |
