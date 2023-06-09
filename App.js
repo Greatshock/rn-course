@@ -10,6 +10,9 @@ import { AllExpensesScreen } from './screens/AllExpensesScreen';
 import { ManageExpenseScreen } from './screens/ManageExpenseScreen';
 
 import { GlobalStyles } from './constants/styles';
+import { IconButton } from './components/UI/IconButton';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 const Tabs = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -17,7 +20,7 @@ const Stack = createNativeStackNavigator();
 function BottomTabsScreen() {
   return (
     <Tabs.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerTintColor: 'white',
         headerStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
@@ -26,7 +29,17 @@ function BottomTabsScreen() {
         tabBarStyle: {
           backgroundColor: GlobalStyles.colors.primary500,
         },
-      }}
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon='add'
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              navigation.navigate('ManageExpense');
+            }}
+          />
+        ),
+      })}
     >
       <Tabs.Screen
         name='Recent'
@@ -59,19 +72,29 @@ export default function App() {
       <StatusBar style='light' />
 
       <View style={styles.appContainer}>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name='BottomTabs'
-              component={BottomTabsScreen}
-              options={{ headerShown: false }}
-            ></Stack.Screen>
-            <Stack.Screen
-              name='ManageExpense'
-              component={ManageExpenseScreen}
-            ></Stack.Screen>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: GlobalStyles.colors.primary500,
+                },
+                headerTintColor: 'white',
+              }}
+            >
+              <Stack.Screen
+                name='BottomTabs'
+                component={BottomTabsScreen}
+                options={{ headerShown: false }}
+              ></Stack.Screen>
+              <Stack.Screen
+                name='ManageExpense'
+                component={ManageExpenseScreen}
+                options={{ presentation: 'modal' }}
+              ></Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </Provider>
       </View>
     </>
   );
