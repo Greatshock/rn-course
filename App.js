@@ -1,61 +1,77 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, View, FlatList, Button } from 'react-native';
-import { GoalItem } from './components/GoalItem';
-import { GoalInput } from './components/GoalInput';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { RecentExpensesScreen } from './screens/RecentExpensesScreen';
+import { AllExpensesScreen } from './screens/AllExpensesScreen';
+import { ManageExpenseScreen } from './screens/ManageExpenseScreen';
+
+import { GlobalStyles } from './constants/styles';
+
+const Tabs = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function BottomTabsScreen() {
+  return (
+    <Tabs.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: GlobalStyles.colors.primary500,
+        },
+        tabBarActiveTintColor: GlobalStyles.colors.accent500,
+        tabBarStyle: {
+          backgroundColor: GlobalStyles.colors.primary500,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name='Recent'
+        component={RecentExpensesScreen}
+        options={{
+          title: 'Recent Expenses',
+          tabBarLabel: 'Recent',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name='hourglass' color={color} size={size} />
+          ),
+        }}
+      ></Tabs.Screen>
+      <Tabs.Screen
+        name='AllExpenses'
+        component={AllExpensesScreen}
+        options={{
+          title: 'All Expenses',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name='calendar' color={color} size={size} />
+          ),
+        }}
+      ></Tabs.Screen>
+    </Tabs.Navigator>
+  );
+}
 
 export default function App() {
-  const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [courseGoals, setCourseGoals] = useState([]);
-
-  function startAddGoalHandler() {
-    setModalIsVisible(true);
-  }
-
-  function endAddGoalHandler() {
-    setModalIsVisible(false);
-  }
-
-  function addGoalHandler(enteredGoalText) {
-    setCourseGoals((goals) => [
-      ...goals,
-      { id: Date.now().toString(), text: enteredGoalText },
-    ]);
-    setModalIsVisible(false);
-  }
-
-  function deleteGoalHandler(id) {
-    setCourseGoals((goals) => goals.filter((g) => g.id !== id));
-  }
-
   return (
     <>
       <StatusBar style='light' />
+
       <View style={styles.appContainer}>
-        <Button
-          title='Add New Goal'
-          color='#8b56d0'
-          onPress={startAddGoalHandler}
-        />
-        <GoalInput
-          visible={modalIsVisible}
-          onAddGoal={addGoalHandler}
-          onCancel={endAddGoalHandler}
-        />
-        <View style={styles.goalsContainer}>
-          <FlatList
-            data={courseGoals}
-            alwaysBounceVertical={false}
-            keyExtractor={(item, index) => item.id}
-            renderItem={({ item }) => (
-              <GoalItem
-                id={item.id}
-                text={item.text}
-                onDeleteItem={deleteGoalHandler}
-              />
-            )}
-          ></FlatList>
-        </View>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name='BottomTabs'
+              component={BottomTabsScreen}
+              options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen
+              name='ManageExpense'
+              component={ManageExpenseScreen}
+            ></Stack.Screen>
+          </Stack.Navigator>
+        </NavigationContainer>
       </View>
     </>
   );
@@ -64,10 +80,5 @@ export default function App() {
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 16,
-  },
-  goalsContainer: {
-    flex: 5,
   },
 });
