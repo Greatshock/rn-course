@@ -1,16 +1,16 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { ExpensesOutput } from '../components/ExpensesOutput';
 import { useSelector } from 'react-redux';
 import { getDateMinusDays } from '../utils/date';
+import { ExpensesOutput } from '../components/ExpenseOutput/ExpensesOutput';
 
 export function RecentExpensesScreen() {
   const expenses = useSelector((state) => state.expenses.expenses);
 
   const date7daysAgo = getDateMinusDays(new Date(), 7);
-  const recentExpenses = expenses.filter(
-    (e) => new Date(e.date) > date7daysAgo
-  );
+  const recentExpenses = expenses.filter((e) => {
+    return new Date(e.date) > date7daysAgo;
+  });
 
   return (
     <ExpensesOutput

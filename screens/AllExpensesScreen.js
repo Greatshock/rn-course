@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { ExpensesOutput } from '../components/ExpensesOutput';
 import { useSelector } from 'react-redux';
+import { ExpensesOutput } from '../components/ExpenseOutput/ExpensesOutput';
 
 export function AllExpensesScreen() {
   const expenses = useSelector((state) => state.expenses.expenses);
