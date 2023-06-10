@@ -1,18 +1,15 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useContext } from 'react';
 import { ExpensesOutput } from '../components/ExpenseOutput/ExpensesOutput';
+import { ExpensesContext } from '../store/expenses-context';
 
 export function AllExpensesScreen() {
-  const expenses = useSelector((state) => state.expenses.expenses);
+  const expensesCtx = useContext(ExpensesContext);
 
   return (
     <ExpensesOutput
-      expenses={expenses}
+      expenses={expensesCtx.expenses}
       expensesPeriod='Total'
-      fallbackText='No expenses registered expenses found.'
+      fallbackText='No registered expenses found!'
     />
   );
 }
-
-const styles = StyleSheet.create({});

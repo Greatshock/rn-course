@@ -8,15 +8,17 @@ export function ExpenseItem({ id, amount, date, description }) {
   const navigation = useNavigation();
 
   function expensePressHandler() {
-    navigation.navigate('ManageExpense', { expenseId: id });
+    navigation.navigate('ManageExpense', {
+      expenseId: id,
+    });
   }
 
   return (
     <Pressable
-      style={({ pressed }) => pressed && styles.pressed}
       onPress={expensePressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
     >
-      <View style={styles.item}>
+      <View style={styles.expenseItem}>
         <View>
           <Text style={[styles.textBase, styles.description]}>
             {description}
@@ -24,7 +26,7 @@ export function ExpenseItem({ id, amount, date, description }) {
           <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
         </View>
         <View style={styles.amountContainer}>
-          <Text style={styles.amount}>{amount}</Text>
+          <Text style={styles.amount}>{amount.toFixed(2)}</Text>
         </View>
       </View>
     </Pressable>
@@ -32,7 +34,10 @@ export function ExpenseItem({ id, amount, date, description }) {
 }
 
 const styles = StyleSheet.create({
-  item: {
+  pressed: {
+    opacity: 0.75,
+  },
+  expenseItem: {
     padding: 12,
     marginVertical: 8,
     backgroundColor: GlobalStyles.colors.primary500,
@@ -60,12 +65,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
+    minWidth: 80,
   },
   amount: {
     color: GlobalStyles.colors.primary500,
     fontWeight: 'bold',
-  },
-  pressed: {
-    opacity: 0.75,
   },
 });
