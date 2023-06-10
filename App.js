@@ -1,62 +1,52 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, View, FlatList, Button } from 'react-native';
-import { GoalItem } from './components/GoalItem';
-import { GoalInput } from './components/GoalInput';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AllPlaces } from './screens/AllPlaces';
+import { AddPlace } from './screens/AddPlace';
+import { IconButton } from './components/UI/IconButton';
+import { Colors } from './constants/colors';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [courseGoals, setCourseGoals] = useState([]);
-
-  function startAddGoalHandler() {
-    setModalIsVisible(true);
-  }
-
-  function endAddGoalHandler() {
-    setModalIsVisible(false);
-  }
-
-  function addGoalHandler(enteredGoalText) {
-    setCourseGoals((goals) => [
-      ...goals,
-      { id: Date.now().toString(), text: enteredGoalText },
-    ]);
-    setModalIsVisible(false);
-  }
-
-  function deleteGoalHandler(id) {
-    setCourseGoals((goals) => goals.filter((g) => g.id !== id));
-  }
-
   return (
     <>
-      <StatusBar style='light' />
-      <View style={styles.appContainer}>
-        <Button
-          title='Add New Goal'
-          color='#8b56d0'
-          onPress={startAddGoalHandler}
-        />
-        <GoalInput
-          visible={modalIsVisible}
-          onAddGoal={addGoalHandler}
-          onCancel={endAddGoalHandler}
-        />
-        <View style={styles.goalsContainer}>
-          <FlatList
-            data={courseGoals}
-            alwaysBounceVertical={false}
-            keyExtractor={(item, index) => item.id}
-            renderItem={({ item }) => (
-              <GoalItem
-                id={item.id}
-                text={item.text}
-                onDeleteItem={deleteGoalHandler}
-              />
-            )}
-          ></FlatList>
-        </View>
-      </View>
+      <StatusBar style='dark' />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: Colors.primary500 },
+            headerTintColor: Colors.gray700,
+            contentStyle: { backgroundColor: Colors.gray700 },
+          }}
+        >
+          <Stack.Screen
+            name='AllPlaces'
+            component={AllPlaces}
+            options={({ navigation }) => ({
+              title: 'Your Favorite Places',
+              headerRight: ({ tintColor }) => (
+                <IconButton
+                  icon='add'
+                  size={24}
+                  color={tintColor}
+                  onPress={() => {
+                    navigation.navigate('AddPlace');
+                  }}
+                />
+              ),
+            })}
+          ></Stack.Screen>
+          <Stack.Screen
+            name='AddPlace'
+            component={AddPlace}
+            options={{
+              title: 'Add a New Place',
+            }}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 }
@@ -64,10 +54,5 @@ export default function App() {
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 16,
-  },
-  goalsContainer: {
-    flex: 5,
   },
 });
